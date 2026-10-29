@@ -5,12 +5,12 @@ import { supabase, forToken, errorMessage } from './supabase';
 import { loadEvents, saveEvent } from './studyStorage';
 import { editCache, enqueue, readCache, reconcile, visibleEvents, type CloudCache } from './cloudStorage';
 import type { AnswerEvent } from './study';
-type Question = typeof sampleQuestions[number];
+import type { Question } from './question';
 export function useStudy() {
   const [session,setSession]=useState<Session|null>(null);
   const [authReady,setAuthReady]=useState(!supabase);
   const [state,setState]=useState({owner:'',events:[] as AnswerEvent[],pending:0,ready:false});
-  const [questions,setQuestions]=useState(sampleQuestions);
+  const [questions,setQuestions]=useState<Question[]>(sampleQuestions);
   const [error,setError]=useState('');
   const [syncing,setSyncing]=useState(false);
   const syncRef=useRef<()=>Promise<void>>(async()=>{});

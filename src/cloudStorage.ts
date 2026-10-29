@@ -1,6 +1,6 @@
 import type { AnswerEvent } from './study';
-import sampleQuestions from './questions.json';
-export type CloudCache = { questions?: typeof sampleQuestions; confirmed: AnswerEvent[]; pending: AnswerEvent[] };
+import type { Question } from './question';
+export type CloudCache = { questions?: Question[]; confirmed: AnswerEvent[]; pending: AnswerEvent[] };
 let dbPromise: Promise<IDBDatabase> | undefined;
 function database() {
   return dbPromise ??= new Promise<IDBDatabase>((resolve,reject)=>{

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.pnpm-store/
+# Local verification screenshots are not published.
+docs/*.png
+docs/*.jpg

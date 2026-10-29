@@ -7,3 +7,6 @@ dist/
 # Local verification screenshots are not published.
 docs/*.png
 docs/*.jpg
+
+# User-provided import drafts stay local until publication is explicitly intended.
+imports/

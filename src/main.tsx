@@ -5,6 +5,7 @@ import { AccountPanel } from './AccountPanel';
 import { supabase } from './supabase';
 import './style.css';
 import { QuestionContent } from './QuestionContent';
+import { ThemeChecks } from './ThemeChecks';
 import { emptyProgress, summarize, type AnswerEvent, type Status } from './study';
 
 const labels = { unanswered: '未回答', correct: '正解', review: '間違い・復習対象', mastered: '習得済み' };
@@ -78,9 +79,9 @@ function App() {
   <AccountPanel session={study.session} authReady={study.authReady} pending={study.pending} syncing={study.syncing} error={study.error} retry={study.retry} importLocal={study.importLocal}/>
   {!inLibrary ? <section className="workspace" aria-label="テーマ一覧">
     <div className="section-title"><div><p className="eyebrow">STUDY THEMES</p><h2>テーマから学ぶ <span className="count">{themes.length}テーマ</span></h2></div></div>
-    <p className="theme-lead">学びたいテーマを選んで、問題へ進みましょう。</p>
+    <p className="theme-lead">学びたいテーマを選んで、問題へ進みましょう。左の3つのチェックは自由に使えます（このブラウザに保存）。</p>
     <div className="theme-shortcuts"><button onClick={() => enterTheme(null)}>全テーマの問題を見る（{questions.length}問）</button><button onClick={() => enterTheme(null, 'review')}>全テーマの間違い復習（{questions.filter(q => getProgress(q.id).status === 'review').length}問）</button></div>
-    <div className="theme-grid">{themes.map(({name,items}) => <button className="theme-card" key={name} onClick={() => enterTheme(name)}><span className="theme-card-title">{name}<span aria-hidden="true">→</span></span><span className="theme-total">{items.length}問</span><span className="theme-progress">未回答 {items.filter(q => getProgress(q.id).status === 'unanswered').length} ／ 復習 {items.filter(q => getProgress(q.id).status === 'review').length} ／ 習得 {items.filter(q => getProgress(q.id).status === 'mastered').length}</span><span className="theme-enter">このテーマの問題へ</span></button>)}</div>
+    <div className="theme-grid">{themes.map(({name,items}) => <div className="theme-row" key={name}><ThemeChecks key={`${study.session?.user.id ?? 'guest'}:${name}`} theme={name} account={study.session?.user.id ?? 'guest'}/><button className="theme-card" onClick={() => enterTheme(name)}><span className="theme-card-title">{name}<span aria-hidden="true">→</span></span><span className="theme-total">{items.length}問</span><span className="theme-progress">未回答 {items.filter(q => getProgress(q.id).status === 'unanswered').length} ／ 復習 {items.filter(q => getProgress(q.id).status === 'review').length} ／ 習得 {items.filter(q => getProgress(q.id).status === 'mastered').length}</span><span className="theme-enter">このテーマの問題へ</span></button></div>)}</div>
     {!themes.length && <p>登録されているテーマはありません。</p>}
   </section> : <section className="workspace" aria-label="問題一覧"><button className="back-to-themes" onClick={returnToThemes}>← テーマ一覧に戻る</button><div className="section-title"><div><p className="eyebrow">QUESTION LIBRARY</p><h2>{selectedTheme ?? '全テーマの問題'} <span className="count">{scopedQuestions.length}問</span></h2></div></div>
   <div className="study-tabs" aria-label="学習対象">{([['all','全問題'],['unanswered','未回答'],['review','間違い復習'],['mastered','習得済み']] as const).map(([key,label])=><button key={key} aria-pressed={view===key} onClick={()=>changeFilter(()=>setView(key))}>{label} <strong>{scopedQuestions.filter(q=>key==='all'||getProgress(q.id).status===key).length}</strong></button>)}</div>
